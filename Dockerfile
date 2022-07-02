@@ -9,7 +9,6 @@ RUN apt-get update -qq && apt-get install -y \
     curl \
     git \
     wget \
-    zsh \
     udev \
     git \
     cmake \
@@ -34,5 +33,3 @@ COPY install_scripts/microros_install.sh .
 RUN chmod +x microros_install.sh
 RUN ./microros_install.sh
 
-# Install oh-my-zsh
-RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended

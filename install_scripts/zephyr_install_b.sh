@@ -1,12 +1,12 @@
 #!/bin/bash
 
 cd ~/zephyr-sdk-0.14.2
-./setup.sh -t all
+yes | ./setup.sh -t all -c
 
-# cd /etc
-# # mkdir udev
-# cd ~/zephyr-sdk-0.14.2
+# cp -p ~/zephyr-sdk-0.14.2/sysroots/x86_64-pokysdk-linux/usr/share/openocd/contrib/60-openocd.rules /etc/udev/rules.d
+# # service udev restart
+# udevadm control --reload
 
-cp -p ~/zephyr-sdk-0.14.2/sysroots/x86_64-pokysdk-linux/usr/share/openocd/contrib/60-openocd.rules /etc/udev/rules.d
-# service udev restart
-udevadm control --reload
+#zephyr build vars
+export ZEPHYR_TOOLCHAIN_VARIANT=zephyr
+export ZEPHYR_SDK_INSTALL_DIR=~/zephyr-sdk-0.14.2

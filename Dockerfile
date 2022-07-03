@@ -1,6 +1,7 @@
-ARG FROM_IMAGE=osrf/ros:foxy-desktop
+ARG FROM_IMAGE=zephyrprojectrtos/zephyr-build:latest
 FROM $FROM_IMAGE
 USER root
+ENV DEBIAN_FRONTEND=noninteractive
 
 RUN apt upgrade -y
 
@@ -9,24 +10,25 @@ RUN apt-get update -qq && apt-get install -y \
     curl \
     git \
     wget \
-    udev \
     git \
     cmake \
     ninja-build \
+    udev \
+    debconf-utils \
     gperf
+
 
 WORKDIR /home
 RUN mkdir setup
 WORKDIR /home/setup
 
-# Install zephyr
-COPY install_scripts/zephyr_install.sh .
-RUN chmod +x zephyr_install.sh
-RUN ./zephyr_install.sh
+RUN echo 'debconf debconf/frontend select Noninteractive' | debconf-set-selections
 
-COPY install_scripts/zephyr_install_b.sh .
-RUN chmod +x zephyr_install_b.sh
-RUN ./zephyr_install_b.sh
+RUN git clone https://github.com/15jgme/ros2_setup_scripts_ubuntu.git
+WORKDIR /home/setup/ros2_setup_scripts_ubuntu
+RUN ./run.sh
+RUN rosdep init
+RUN rosdep update
 
 # Install microros
 COPY install_scripts/microros_install.sh .

@@ -63,5 +63,6 @@ docker run \
   --env DISPLAY=$DISPLAY \
   --env TERM=xterm-256color \
   --name $full_container_name \
+  -v /dev:/dev \
   micro-ros_zephyr \
   /bin/bash

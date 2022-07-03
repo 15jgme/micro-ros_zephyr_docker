@@ -30,8 +30,10 @@ RUN ./run.sh
 RUN rosdep init
 RUN rosdep update
 
+WORKDIR /home/setup
 # Install microros
 COPY install_scripts/microros_install.sh .
 RUN chmod +x microros_install.sh
 RUN ./microros_install.sh
+
 

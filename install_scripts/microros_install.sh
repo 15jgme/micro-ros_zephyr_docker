@@ -18,3 +18,5 @@ apt-get install python3-pip
 # Build micro-ROS tools and source them
 colcon build
 source install/local_setup.bash
+
+echo "micro-ros install finished!"

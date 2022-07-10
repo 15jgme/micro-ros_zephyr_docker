@@ -2,6 +2,7 @@ ARG FROM_IMAGE=zephyrprojectrtos/zephyr-build:latest
 FROM $FROM_IMAGE
 USER root
 ENV DEBIAN_FRONTEND=noninteractive
+SHELL ["/bin/bash", "-c"]
 
 RUN apt upgrade -y
 
@@ -31,9 +32,21 @@ RUN rosdep init
 RUN rosdep update
 
 WORKDIR /home/setup
-# Install microros
-COPY install_scripts/microros_install.sh .
-RUN chmod +x microros_install.sh
-RUN ./microros_install.sh
 
+# Source the ROS 2 installation
+ENV ROS_DISTRO=foxy
+RUN source /opt/ros/$ROS_DISTRO/setup.bash
 
+# Create a workspace and download the micro-ROS tools
+RUN mkdir microros_ws
+WORKDIR /home/setup/microros_ws
+RUN git clone -b $ROS_DISTRO https://github.com/micro-ROS/micro_ros_setup.git src/micro_ros_setup &&\
+# Update dependencies using rosdep
+    apt update && rosdep update &&\
+    rosdep install --from-paths src --ignore-src -y &&\
+# Install pip
+    apt-get install python3-pip 
+
+RUN /bin/bash -c "chmod +x /opt/ros/foxy/setup.bash; source /opt/ros/foxy/setup.bash; colcon build;"
+RUN rosdep fix-permissions
+RUN /bin/bash -c "chmod +x install/local_setup.bash; source install/local_setup.bash; rosdep update;"
